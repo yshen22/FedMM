@@ -15,8 +15,13 @@ FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation" Pa
 ---
 
 Download mnistm data:
+```
 curl -L -O http://www.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/BSR/BSR_bsds500.tgz
+```
+preprocess mnistm dataset
+```
 python create_mnistm.py 
+```
 
 #### Experiments on Federated Domain Adaptation:
 ---
