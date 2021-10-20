@@ -7,7 +7,7 @@ import tensorflow as tf
 
 
 class PDGradientDescent(optimizer.Optimizer):
-	"""Implementation of Perturbed Gradient Descent, i.e., FedProx optimizer"""
+	"""Implementation of Gradient Descent on Augmented Lagrangian, i.e., FedMM optimizer"""
 
 	def __init__(self, learning_rate=0.001, mu=0.01, use_locking=False, name="PGD"):
 		super(PDGradientDescent, self).__init__(use_locking, name)
