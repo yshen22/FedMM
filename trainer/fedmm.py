@@ -45,48 +45,46 @@ def train(model_instance, train_source_loader_client1, train_source_loader_clien
     X3, y3 = next(train_source_loader_client2)
     client2_target_batch_size = np.shape(X2)[0]
     client2_source_batch_size = np.shape(X3)[0]
-#    print('client2_target_batch_size: ' + str(client2_target_batch_size))
-#    print('client2_source_batch_size: ' + str(client2_source_batch_size))
-    # print(X2)
-    # print(X3)
+    print('client2_target_batch_size: ' + str(client2_target_batch_size))
+    print('client2_source_batch_size: ' + str(client2_source_batch_size))
     client2_domain_labels = np.concatenate([np.tile([0., 1.], [client2_target_batch_size, 1]), np.tile([1., 0.], [client2_source_batch_size, 1])], axis =0)
+
     dual_models = []
     client_params = []
     train_record = []
-#    step_ratio = model_instance.step_ratio
     variable_set = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
     for i in range(2):
+        dual_model = []
         client_model = []
         for var in variable_set:
+            dual_model.append(np.zeros(shape= var.get_shape().as_list(), dtype=np.float32))
             client_model.append(np.zeros(shape = var.get_shape().as_list(), dtype = np.float32))
+        dual_models.append(dual_model)
         client_params.append(client_model)
 
 
-    lr_t = lr 
+    lr_t = lr
     latest_model = get_params(sess)
-    pbar = range(max_iter)
-    for i in pbar:
+    for i in range(max_iter):
 #            print('====================Round {0}===================='.format(i))            
         # Adaptation param and learning rate schedule as described in the paper
 
         lambdat_i = lambda1 * (lambda1_decay ** (i/100))
-#        lr_t = lr * (lr_decay ** (i/100))
         if i == decay_epoch[0] or i == decay_epoch[1]:
             lr_t  = lr_t * 0.1
-
 
     
 
 
         # Training step
+        set_params(latest_model, sess)
+        optimizer.set_params(latest_model, sess)
+        optimizer.set_dual_params(dual_models[0], sess)
 
 #            sess.run(grads_zeros_ops)
-        set_params(latest_model, sess)
         for j in range(num_local_steps):
             X0, y0 = next(train_target_loader_client1)
             X1, y1 = next(train_source_loader_client1)
-#            print(np.shape(X0))
-#            print(np.shape(X1))
             X = np.concatenate([X0, X1], axis=0)
 #                print(y0)
             _  = sess.run(
@@ -95,11 +93,15 @@ def train(model_instance, train_source_loader_client1, train_source_loader_clien
                         lr_placeholder: lr_t, lambdat:lambda1 })
 
         client_params[0] = get_params(sess)
-
+        for soln_i, latest_i, dual_i in zip(client_params[0], latest_model, dual_models[0]):
+            dual_i += (lambda1*(soln_i - latest_i))
+            soln_i +=  dual_i/ lambdat_i
 
         set_params(latest_model, sess)
 
-
+        optimizer.set_params(latest_model, sess)
+        optimizer.set_dual_params(dual_models[1], sess)
+#           sess.run(grads_zeros_ops)
         for j in range(num_local_steps):
             X2, y2 = next(train_target_loader_client2)
             X3, y3 = next(train_source_loader_client2)
@@ -109,15 +111,17 @@ def train(model_instance, train_source_loader_client1, train_source_loader_clien
             feed_dict={model.inputs: X, model.labels: y3, model.domain: client2_domain_labels,
                         lr_placeholder: lr_t, lambdat:lambda1} )
         client_params[1] = get_params(sess)
-
+        for soln_i, latest_i, dual_i in zip(client_params[1], latest_model, dual_models[1]):
+            dual_i += (lambda1*(soln_i - latest_i))
+            soln_i +=  dual_i/ lambdat_i
 
         latest_model = aggregate([(w , soln) for w, soln in zip(np.ones(2)/2, client_params)])
         if i % eval_interval == 0:
-            print('====================Round {0}===================='.format(i))
-            model_instance.set_train(False)    
+            print('====================Round {0}===================='.format(i))    
 #                source_acc = sess.run(label_acc,
 #                feed_dict={model.X: mnist_test, model.y: mnist.test.labels,
 #                model.train: False})
+            model_instance.set_train(False)
             if batch_eval :
                 target_acc_all = 0
                 for k in range(10):
@@ -134,14 +138,16 @@ def train(model_instance, train_source_loader_client1, train_source_loader_clien
                 target_acc_all = sess.run(label_acc,
                     feed_dict={model.inputs: target_test_data, model.labels: target_test_label,
                     })
-
             model_instance.set_train(True)
+    
 #                print('Source (MNIST) accuracy:', source_acc)
             print('Target accuracy:', target_acc_all)
             train_record.append({'acc': target_acc_all})
 
+
             # val
     return train_record
-    print('finish train')
-    train_df = pd.DataFrame.from_records(train_record)
-    train_df.to_csv('acc_result/fedpd_acc.csv')
+
+#    print('finish train')
+#    train_df = pd.DataFrame.from_records(train_record)
+#    train_df.to_csv('acc_result/fedpd_acc.csv')
