@@ -18,7 +18,7 @@ Download mnistm data:
 ```
 curl -L -O http://www.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/BSR/BSR_bsds500.tgz
 ```
-preprocess mnistm dataset
+Preprocess mnistm dataset
 ```
 python create_mnistm.py 
 ```
