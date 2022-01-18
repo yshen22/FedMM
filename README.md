@@ -1,5 +1,5 @@
 This repository contains the code accompanying the paper  "
-FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation" Paper<!--[link](https://arxiv.org/pdf/2110.08477.pdf)-->: 
+FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation" Paper[link](https://arxiv.org/pdf/2110.08477.pdf): 
 
 ![network structure](figfedmm.jpg  "Problem description")
 
@@ -44,9 +44,9 @@ python train.py -max_iter=30000 -lambda1_decay=1.02 -adv_loss='CDAN'
 ---
 
 ```
-@misc{xxxx.xxxxx,
-Author = {Anonymous},
+@misc{2110.08477,
+Author = {Yan Shen, Jian Du, Han Zhao, Benyu Zhang, Zhanghexuan Ji, Mingchen Gao},
 Title = {FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation},
 Year = {2021},
-Eprint = {arXiv:xxxx.xxxxx},
+Eprint = {arXiv:2110.08477},
 }
