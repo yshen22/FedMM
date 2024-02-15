@@ -25,19 +25,14 @@ python create_mnistm.py
 
 #### Experiments on Federated Domain Adaptation:
 ---
-Usage for the Proposed FedMM on DANN loss:
+Usage for supervised training on source domain at Phase S_0:
 ```
-python train.py -max_iter=15000 -lambda1_decay=1.05 -adv_loss='DANN' 
-```
-
-Usage for the Proposed FedMM on MDD loss: 
-```
-python train.py -max_iter=50000 -lambda1_decay=1.01 -adv_loss='MDD' 
+python experiment.py -train_mod='sup_train' -SUP_EPOCHS=10 -adv_loss='MDD' -ckpt_path=$CHECKPOINT_SAVE_DIR  
 ```
 
-Usage for the Proposed FedMM on CDAN loss 
+Usage for continual adversarail domain adaptation using domain domain discriminators: 
 ```
-python train.py -max_iter=30000 -lambda1_decay=1.02 -adv_loss='CDAN'
+python experiment.py -SUP_EPOCHS=10 -SR_DISC_EPOCHS=5 -DA_EPOCHS=100 -adv_loss='MDD' -ckpt_path=$CHECKPOINT_SAVE_DIR  
 ```
 
 ### Reference
