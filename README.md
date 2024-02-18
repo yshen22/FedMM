@@ -44,11 +44,12 @@ python train.py -max_iter=30000 -lambda1_decay=1.02 -adv_loss='CDAN'
 ---
 
 ```
-@misc{2110.08477,
-Author = {Yan Shen, Jian Du, Han Zhao, Benyu Zhang, Zhanghexuan Ji, Mingchen Gao},
-Title = {FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation},
-Year = {2021},
-Eprint = {arXiv:2110.08477},
+@inproceedings{shen2023fedmm,
+  title={FedMM: A Communication Efficient Solver for Federated Adversarial Domain Adaptation},
+  author={Shen, Yan and Du, Jian and Zhao, Han and Ji, Zhanghexuan and Ma, Chunwei and Gao, Mingchen},
+  booktitle={Proceedings of the 2023 International Conference on Autonomous Agents and Multiagent Systems},
+  pages={1808--1816},
+  year={2023}
 }
 
 
