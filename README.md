@@ -1,4 +1,4 @@
-This repository contains the code accompanying the paper  "
+This repository contains the code accompanying the AAMAS2023 paper  "
 FedMM: Saddle Point Optimization for Federated Adversarial Domain Adaptation" Paper[link](https://arxiv.org/pdf/2110.08477.pdf): 
 
 ![network structure](figfedmm.jpg  "Problem description")
